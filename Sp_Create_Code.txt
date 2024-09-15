@@ -1,0 +1,83 @@
+SP create Code
+-----------------------------
+USE [PractiseEfCoreWIthSP]
+GO
+/****** Object:  StoredProcedure [dbo].[GetAllProducts]    Script Date: 15-Sep-24 4:47:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[GetAllProducts]
+AS
+BEGIN
+	SELECT *
+	FROM Products
+	WHERE IsDeleted = 0
+END
+
+----------------------------------------
+
+USE [PractiseEfCoreWIthSP]
+GO
+/****** Object:  StoredProcedure [dbo].[GetProductById]    Script Date: 15-Sep-24 4:48:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[GetProductById]
+@ProductId INT
+AS
+BEGIN
+	SELECT *
+	FROM Products
+	WHERE Id = @ProductId And IsDeleted = 0
+END
+-------------------------------------------------
+USE [PractiseEfCoreWIthSP]
+GO
+/****** Object:  StoredProcedure [dbo].[GetProductByName]    Script Date: 15-Sep-24 4:48:19 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[GetProductByName]
+@ProductName NVARCHAR(MAX)
+AS
+BEGIN
+	SELECT *
+	FROM Products
+	WHERE Name = @ProductName AND IsDeleted = 0
+END
+----------------------------------------
+USE [PractiseEfCoreWIthSP]
+GO
+/****** Object:  StoredProcedure [dbo].[UpatedOrRemoveProduct]    Script Date: 15-Sep-24 4:48:35 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[UpatedOrRemoveProduct]
+@ProductId INT,
+@ProductName NVARCHAR(MAX) = NULL,
+@ProductDescription NVARCHAR(MAX) = NULL,
+@ProductPrice DECIMAL = 0,
+@Action NVARCHAR(MAX)
+AS
+BEGIN
+
+	if(UPPER(@Action) = 'UPDATE')
+	BEGIN
+		UPDATE Products
+		SET Name = @ProductName,
+			Description = @ProductDescription,
+			Price = @ProductPrice
+		WHERE Id = @ProductId AND IsDeleted = 0
+	END
+	IF(UPPER(@Action) = 'DELETE')
+	BEGIN
+		UPDATE Products
+		SET IsDeleted = 1
+		WHERE Id = @ProductId
+	END
+END
+-----------------------------
